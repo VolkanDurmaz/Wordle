@@ -1,4 +1,8 @@
-const SECRET_WORD = "METRO"; // Test için gizli kelime
+import { words } from './words.js';
+
+// Artık words dizisini kullanabilirsin
+let SECRET_WORD = words[Math.floor(Math.random() * words.length)];
+
 let attempts = 0;
 let currentGuess = "";
 const board = document.getElementById("game-board");

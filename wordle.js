@@ -222,3 +222,9 @@ async function showWordDefinition(word) {
 document.getElementById("close-modal").onclick = () => {
     document.getElementById("word-info-modal").classList.remove("show");
 };
+
+const darkModeBtn = document.getElementById("dark-mode-btn");
+darkModeBtn.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    darkModeBtn.innerText = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+});

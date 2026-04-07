@@ -1,39 +1,212 @@
 body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #121213; color: white; }
-#game-board { display: grid; grid-template-rows: repeat(6, 60px); grid-template-columns: repeat(5, 60px); gap: 5px; }
+#game-board { 
+    display: grid; 
+    grid-template-rows: repeat(6, 55px); /* 60px -> 55px yapıldı */
+    grid-template-columns: repeat(5, 55px); /* 60px -> 55px yapıldı */
+    gap: 6px; 
+    margin: 10px auto; /* Boşluklar dengelendi */
+}
+
 .tile { 
-    width: 60px; height: 60px; border: 2px solid #3a3a3c; 
-    display: flex; align-items: center; justify-content: center; 
-    font-size: 2rem; font-weight: bold; text-transform: uppercase; 
+    width: 55px; /* Boyut küçültüldü */
+    height: 55px; /* Boyut küçültüldü */
+    border: 2px solid #3a3a3c; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 1.8rem; /* Font biraz dengelendi */
+    font-weight: bold; 
+    text-transform: uppercase;
+    border-radius: 4px; /* Hafif köşe yuvarlatma eklendi */
+    box-sizing: border-box;
+}
+
+/* Harf girildiğinde kutunun parlaması (Pop efekti) */
+.tile:not(:empty) {
+    border-color: #565758;
 }
 .correct { background-color: #538d4e !important; border: none; }
 .present { background-color: #b59f3b !important; border: none; }
 .absent { background-color: #3a3a3c !important; border: none; }
+
 #keyboard {
-    margin-top: 30px;
+    margin: 20px auto;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 95%; /* Genişlik kısıtlanarak kenar boşluğu sağlandı */
+    max-width: 500px; /* Maksimum genişlik daraltıldı */
+    padding: 0 15px; /* Yanlardan ekstra güvenli boşluk */
+    box-sizing: border-box;
+}
+
+.keyboard-row {
+    display: flex;
     justify-content: center;
-    max-width: 500px;
+    gap: 6px;
+    width: 100%;
 }
 
 .key {
+    /* Mevcut key özelliklerin korunuyor */
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px; /* Font çok az küçültüldü */
+    height: 54px; /* Yükseklik çok az düşürüldü */
+    background-color: #818384;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s ease;
+}
+
+.key.key-wide {
+    flex: 1.5;
+    font-size: 12px;
+}
+
+.key.correct {
+    background-color: #538d4e !important;
+}
+
+.key.present {
+    background-color: #b59f3b !important;
+}
+
+.key.absent {
+    background-color: #3a3a3c !important;
+}
+
+.key:hover {
+    background-color: #acafb0;
+}
+
+.key:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+}
+
+@media (max-width: 480px) {
+    .key {
+        height: 50px;
+        font-size: 12px;
+        gap: 4px;
+    }
+    #keyboard {
+        gap: 5px;
+    }
+}
+
+.tile {
+    transition: none !important;
+    backface-visibility: hidden;
+}
+
+.flip {
+    animation: flip-animation 0.5s ease-in-out forwards;
+}
+
+@keyframes flip-animation {
+    0% {
+        transform: rotateX(0);
+    }
+    50% {
+        transform: rotateX(90deg);
+    }
+    100% {
+        transform: rotateX(0);
+    }
+}
+
+.tile.correct, .tile.present, .tile.absent {
+    transition: background-color 0s 0.25s, border-color 0s 0.25s;
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+}
+
+#message {
+    height: 30px;
+    font-weight: bold;
+    color: #ff4d4d;
+    margin-bottom: 10px;
+}
+
+.header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.lang-button {
+    position: absolute;
+    right: 10px;
     background-color: #818384;
     color: white;
     border: none;
-    padding: 15px 10px;
-    margin: 3px;
+    padding: 5px 10px;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
-    text-transform: uppercase;
-    min-width: 35px;
+    font-size: 14px;
+    transition: background-color 0.2s;
 }
 
-.key.correct { background-color: #538d4e; }
-.key.present { background-color: #b59f3b; }
-.key.absent { background-color: #3a3a3c; }
+.lang-button:hover {
+    background-color: #565758;
+}
 
-/* Enter ve Backspace tuşlarını biraz daha geniş yapalım */
-#key-ENTER, #key-BACK {
-    min-width: 65px;
+.modal {
+    position: fixed;
+    bottom: -100%; /* Başlangıçta ekranın dışında */
+    left: 0;
+    width: 100%;
+    height: auto;
+    background-color: #121213;
+    border-top: 2px solid #565758;
+    transition: bottom 0.5s ease-out;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modal.show {
+    bottom: 0; /* Yukarı kayarak gelir */
+}
+
+.modal-content {
+    max-width: 500px;
+    margin: 0 auto;
+    color: white;
+    text-align: center;
+}
+
+#close-modal {
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+#modal-word {
+    color: #538d4e;
+    text-transform: uppercase;
+    margin-bottom: 10px;
 }
